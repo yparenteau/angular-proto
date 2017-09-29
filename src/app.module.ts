@@ -4,6 +4,8 @@ import { AppComponent } from './app/app.component';
 import { TestComponent } from './app/test/test';
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
 
+import '!!style-loader!css-loader!sass-loader!../src/styles/global.scss';
+
 @NgModule({
   declarations: [
     AppComponent,

@@ -2,6 +2,7 @@ import * as webpack from 'webpack';
 import * as path from 'path';
 import { AotPlugin } from '@ngtools/webpack';
 import HtmlPlugin = require('html-webpack-plugin');
+import Visualizer = require('webpack-visualizer-plugin');
 import CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
 const config: webpack.Configuration = {
@@ -43,6 +44,9 @@ const config: webpack.Configuration = {
         'polyfills'
       ]
     }),
+    new Visualizer({
+      filename: './visualizer.html'
+    })
   ],
   resolve: {
     extensions: ['.ts', '.js', '.html'],
@@ -64,6 +68,10 @@ const config: webpack.Configuration = {
       {
         test: /\.ts$/,
         loaders: ['@ngtools/webpack']
+      },
+      {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        loader: 'file-loader?name=fonts/[name].[ext]'
       },
       {
         test: /\.(png|jpg|svg)$/,
