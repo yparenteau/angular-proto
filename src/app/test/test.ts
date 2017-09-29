@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'test',
+  selector: 'rsm-test',
   templateUrl: './test.html',
   styleUrls: ['./test.scss']
 })
 
 export class TestComponent {
-  title = 'app';
+  public title = 'app!';
 }

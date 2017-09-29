@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'rsm-app',
   templateUrl: './app.html',
-  // styleUrls: ['./app.component.css']
+  styleUrls: ['./app.scss']
 })
 
-export class AppComponent {
-  title = 'app';
-}
+export class AppComponent {}
