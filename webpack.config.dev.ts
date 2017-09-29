@@ -50,10 +50,10 @@ const config: webpack.Configuration = {
         test: /\.html$/,
         loaders: ['html-loader']
       },
-      {
-        test: /\.(ttf|eot|svg|woff|woff2)$/,
-        loader: 'file-loader?name=fonts/[name].[ext]'
-      },
+      // {
+      //   test: /\.(ttf|eot|woff|woff2)$/,
+      //   loader: 'file-loader?name=fonts/[name].[ext]'
+      // },
       {
         test: /\.(png|jpg|svg)$/,
         use: 'url-loader?limit=15000',

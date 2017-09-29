@@ -49,9 +49,27 @@ const config: webpack.Configuration = {
   },
   module: {
     rules: [
-      { test: /\.html$/, loaders: ['raw-loader'] },
-      { test: /\.scss$/, loaders: ['raw-loader'] },
-      { test: /\.ts$/, loaders: ['@ngtools/webpack'] }
+      {
+        test: /\.html$/,
+        loaders: ['html-loader']
+      },
+      {
+        test: /\.css$/,
+        loader: 'raw-loader'
+      },
+      {
+        test: /\.scss$/,
+        loaders: ['to-string-loader', 'css-loader', 'sass-loader']
+      },
+      {
+        test: /\.ts$/,
+        loaders: ['@ngtools/webpack']
+      },
+      {
+        test: /\.(png|jpg|svg)$/,
+        use: 'url-loader?limit=15000',
+        exclude: [/node_modules/]
+      },
     ]
   },
   devtool: '#source-map',
