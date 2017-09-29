@@ -6,25 +6,13 @@ import FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 import BuildNotifierPlugin = require('webpack-build-notifier');
 import TSLintPlugin = require('tslint-webpack-plugin');
 import StyleLintPlugin = require('stylelint-webpack-plugin');
-
-const {
-  ContextReplacementPlugin,
-  HotModuleReplacementPlugin,
-  NoEmitOnErrorsPlugin,
-  NamedModulesPlugin,
-  optimize: {
-    CommonsChunkPlugin
-  }
-} = webpack;
+import AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 
 const config: webpack.Configuration = {
   devtool: 'inline-source-map',
   cache: true,
   context: process.cwd(),
-  entry: {
-    polyfills: path.join(__dirname, 'src', 'polyfills.ts'),
-    main: path.join(__dirname, 'src', 'main.dev.ts')
-  },
+  entry: path.join(__dirname, 'src', 'main.dev.ts'),
   resolve: {
     extensions: ['.ts', '.js']
   },
@@ -62,14 +50,7 @@ const config: webpack.Configuration = {
     ]
   },
   plugins: [
-    new CommonsChunkPlugin({
-      names: [
-        'main',
-        'polyfills'
-      ]
-    }),
-
-    new ContextReplacementPlugin(
+    new webpack.ContextReplacementPlugin(
       /angular(\\|\/)core(\\|\/)@angular/,
       path.join(__dirname, 'src')
     ),
@@ -90,11 +71,34 @@ const config: webpack.Configuration = {
       typeCheck: true
     }),
 
+    new webpack.DllReferencePlugin({
+      manifest: path.join(__dirname, `./build/polyfills/manifest.json`),
+      hash: true
+    } as any),
+
+    new webpack.DllReferencePlugin({
+      manifest: path.join(__dirname, `./build/vendor/manifest.json`),
+      hash: true
+    } as any),
+
+    new AddAssetHtmlPlugin([
+      {
+        filepath: path.join(__dirname, `./build/polyfills/polyfills.js`),
+        includeSourcemap: false,
+        hash: true
+      },
+      {
+        filepath: path.join(__dirname, `./build/vendor/vendor.js`),
+        includeSourcemap: false,
+        hash: true
+      }
+    ]),
+
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new FriendlyErrorsPlugin(),
     new BuildNotifierPlugin({title: 'Webpack build is complete', sound: null}),
-    new HotModuleReplacementPlugin(),
-    new NamedModulesPlugin(),
-    new NoEmitOnErrorsPlugin(),
     new StyleLintPlugin({emitErrors: false})
   ],
 

@@ -3,15 +3,12 @@ import * as path from 'path';
 import { AotPlugin } from '@ngtools/webpack';
 import HtmlPlugin = require('html-webpack-plugin');
 import Visualizer = require('webpack-visualizer-plugin');
-import CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
+import AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 
 const config: webpack.Configuration = {
-  entry: {
-    polyfills: path.join(__dirname, 'src', 'polyfills.ts'),
-    main: './src/main.prod.ts'
-  },
+  entry:  './src/main.prod.ts',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, './build/dist'),
     filename: '[name].bundle.js'
   },
   plugins: [
@@ -19,6 +16,7 @@ const config: webpack.Configuration = {
       tsConfigPath: path.join(__dirname, 'tsconfig.json'),
       entryModule: path.join(__dirname, 'src', 'app.module#AppModule')
     }),
+
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
       mangle: {
@@ -31,6 +29,7 @@ const config: webpack.Configuration = {
       },
       comments: false
     }),
+
     new HtmlPlugin({
       template: './src/index.html',
       chunksSortMode: 'dependency',
@@ -38,15 +37,41 @@ const config: webpack.Configuration = {
       baseUrl: '/',
       hash: true
     }),
-    new CommonsChunkPlugin({
-      names: [
-        'main',
-        'polyfills'
-      ]
-    }),
+
     new Visualizer({
       filename: './visualizer.html'
-    })
+    }),
+
+    new webpack.DllReferencePlugin({
+      manifest: path.join(__dirname, `./build/polyfills.min/manifest.json`),
+      hash: true
+    } as any),
+
+    new webpack.DllReferencePlugin({
+      manifest: path.join(__dirname, `./build/vendor.min/manifest.json`),
+      hash: true
+    } as any),
+
+    new AddAssetHtmlPlugin([
+      {
+        filepath: path.join(__dirname, `./build/polyfills.min/polyfills.min.js`),
+        includeSourcemap: false,
+        hash: true
+      },
+      {
+        filepath: path.join(__dirname, `./build/vendor.min/vendor.min.js`),
+        includeSourcemap: false,
+        hash: true
+      }
+    ]),
+
+    // To remove warning: Critical dependency: the request of a dependency is an expression
+    // WARNING in ./node_modules/@angular/core/@angular/core.es5.js
+    // new webpack.ContextReplacementPlugin(
+    //   /angular(\\|\/)core(\\|\/)@angular/,
+    //   path.join(__dirname, 'src')
+    // )
+    // new webpack.IgnorePlugin(/^\.\/hmr/, /angularclass$/)
   ],
   resolve: {
     extensions: ['.ts', '.js', '.html'],

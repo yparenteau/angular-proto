@@ -4,15 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm run build:dlls",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack.config.dev.ts",
-    "start": "http-server ./dist -p 3000",
-    "build": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.config.prod.ts",
+    "start": "http-server ./build/dist -p 3000",
+    "build": "npm run clean && cross-env NODE_ENV=production npm run build:dlls && cross-env NODE_ENV=production webpack --config webpack.config.prod.ts",
+    "build:dlls": "cross-env DLL=polyfills webpack --config ./webpack.config.dll.ts && cross-env DLL=vendor webpack --config ./webpack.config.dll.ts",
     "lint": "tslint -c tslint.json -p tsconfig.json --type-check",
     "clean": "rimraf ./dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "",
   "dependencies": {
     "@angular/common": "4.4.3",
     "@angular/compiler": "4.4.3",
@@ -37,6 +39,7 @@
     "@ngtools/webpack": "1.7.1",
     "@types/node": "8.0.19",
     "@types/webpack": "3.0.12",
+    "add-asset-html-webpack-plugin": "2.1.2",
     "angular2-template-loader": "0.6.2",
     "awesome-typescript-loader": "3.2.3",
     "css-loader": "0.28.7",
