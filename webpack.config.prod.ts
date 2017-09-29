@@ -1,102 +1,35 @@
 import * as webpack from 'webpack';
 import * as path from 'path';
 import { AotPlugin } from '@ngtools/webpack';
-
 import HtmlPlugin = require('html-webpack-plugin');
-import FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-import BuildNotifierPlugin = require('webpack-build-notifier');
-import TSLintPlugin = require('tslint-webpack-plugin');
-import StyleLintPlugin = require('stylelint-webpack-plugin');
-
-const {
-  ContextReplacementPlugin,
-  HotModuleReplacementPlugin,
-  NoEmitOnErrorsPlugin,
-  optimize: {
-    CommonsChunkPlugin
-  }
-} = webpack;
-
-const isProd = process.env.NODE_ENV === 'production';
-const entryFile = isProd ? 'main.prod.ts' : 'main.dev.ts';
-
-const tsLoaders =  /*isProd
-  ? ['@ngtools/webpack']
-  :*/ [
-    '@angularclass/hmr-loader?pretty=true&prod=false',
-    'awesome-typescript-loader',
-    'angular2-template-loader'
-  ];
-
-const envPlugins = isProd
-  ? [
-    // new AotPlugin({
-    //   tsConfigPath: './tsconfig.aot.json',
-    //   entryModule: 'src/app.module#AppModule'
-    // })
-  ]
-  : [];
+import CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
 const config: webpack.Configuration = {
-  // devtool: 'inline-source-map',
-  cache: true,
-  context: process.cwd(),
-  entry: path.join(__dirname, 'src', entryFile),
-  //   {
-  //   polyfills: path.join(__dirname, 'src', 'polyfills.ts'),
-  //   client: path.join(__dirname, 'src', entryFile)
-  // },
-  resolve: {
-    extensions: ['.ts', '.js']
+  entry: {
+    polyfills: path.join(__dirname, 'src', 'polyfills.ts'),
+    main: './src/main.prod.ts'
   },
   output: {
-    filename: '[name].js',
-  },
-  module: {
-    rules: [
-      { test: /\.ts/, use: '@ngtools/webpack' },
-      // {
-      //   test: /\.ts$/,
-      //   exclude: [/node_modules/],
-      //   loaders: tsLoaders
-      // },
-      {
-        test: /\.scss|\.css$/,
-        loaders: ['css-loader', 'sass-loader']
-      },
-      {
-        test: /\.html$/,
-        loaders: ['html-loader']
-      },
-      {
-        test: /\.(ttf|eot|svg|woff|woff2)$/,
-        loader: 'file-loader?name=fonts/[name].[ext]'
-      },
-      {
-        test: /\.(png|jpg|svg)$/,
-        use: 'url-loader?limit=15000',
-        exclude: [/node_modules/]
-      },
-    ]
+    path: path.join(__dirname, 'dist'),
+    filename: '[name].bundle.js'
   },
   plugins: [
-    // new CommonsChunkPlugin({
-    //   names: [
-    //     'client',
-    //     'polyfills'
-    //   ]
-    // }),
-
     new AotPlugin({
-      tsConfigPath: path.join(__dirname, 'tsconfig.aot.json'),
-      entryModule: path.join(__dirname, 'src/app.module#AppModule')
+      tsConfigPath: path.join(__dirname, 'tsconfig.json'),
+      entryModule: path.join(__dirname, 'src', 'app.module#AppModule')
     }),
-
-    new ContextReplacementPlugin(
-      /angular(\\|\/)core(\\|\/)@angular/,
-      path.join(__dirname, 'src')
-    ),
-
+    new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
+      mangle: {
+        screw_ie8: true,
+        keep_fnames: true
+      },
+      compress: {
+        warnings: false,
+        screw_ie8: true
+      },
+      comments: false
+    }),
     new HtmlPlugin({
       template: './src/index.html',
       chunksSortMode: 'dependency',
@@ -104,35 +37,24 @@ const config: webpack.Configuration = {
       baseUrl: '/',
       hash: true
     }),
-
-    new TSLintPlugin({
-      files: [
-        'src/**/*.ts'
-      ],
-      project: './tsconfig.json',
-      typeCheck: true
+    new CommonsChunkPlugin({
+      names: [
+        'main',
+        'polyfills'
+      ]
     }),
-
-    // new FriendlyErrorsPlugin(),
-    new BuildNotifierPlugin({title: 'Webpack build is complete', sound: null}),
-    new HotModuleReplacementPlugin(),
-    // new NoEmitOnErrorsPlugin(),
-    new StyleLintPlugin({emitErrors: false}),
-    ...envPlugins
   ],
-
-  // devServer: {
-  //   hot: true,
-  //   contentBase: path.join(__dirname, './src'),
-  //   port: 3000,
-  //   historyApiFallback: true,
-  //   compress: true,
-  //   stats: {
-  //     'colors': true,
-  //     'chunks': false,
-  //     'errors-only': true
-  //   }
-  // }
+  resolve: {
+    extensions: ['.ts', '.js', '.html'],
+  },
+  module: {
+    rules: [
+      { test: /\.html$/, loaders: ['raw-loader'] },
+      { test: /\.scss$/, loaders: ['raw-loader'] },
+      { test: /\.ts$/, loaders: ['@ngtools/webpack'] }
+    ]
+  },
+  devtool: '#source-map',
 };
 
 export default config;

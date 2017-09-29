@@ -23,7 +23,7 @@ const config: webpack.Configuration = {
   context: process.cwd(),
   entry: {
     polyfills: path.join(__dirname, 'src', 'polyfills.ts'),
-    client: path.join(__dirname, 'src', 'main.dev.ts')
+    main: path.join(__dirname, 'src', 'main.dev.ts')
   },
   resolve: {
     extensions: ['.ts', '.js']
@@ -64,7 +64,7 @@ const config: webpack.Configuration = {
   plugins: [
     new CommonsChunkPlugin({
       names: [
-        'client',
+        'main',
         'polyfills'
       ]
     }),
