@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
 })
 
 export class TestComponent {
-  public title = 'Angular rock!';
+  public title = 'Angular rs';
 }

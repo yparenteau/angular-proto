@@ -15,7 +15,6 @@ const config = {
     filename: '[name].js',
     library: dll
   },
-  devtool: !isProduction && 'source-map',
   plugins: [
     new webpack.DllPlugin({
       path: path.join(__dirname, `./build/${dllName}/manifest.json`),

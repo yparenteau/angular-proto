@@ -8,7 +8,7 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack.config.dev.ts",
     "start": "http-server ./build/dist -p 3000",
     "build": "npm run clean && cross-env NODE_ENV=production npm run build:dlls && cross-env NODE_ENV=production webpack --config webpack.config.prod.ts",
-    "build:dlls": "cross-env DLL=polyfills webpack --config ./webpack.config.dll.ts && cross-env DLL=vendor webpack --config ./webpack.config.dll.ts",
+    "build:dlls": "cross-env DLL=polyfills webpack --config ./webpack.config.dll.ts && cross-env DLL=vendor webpack --config ./webpack.config.dll.ts && cross-env DLL=devtools webpack --config ./webpack.config.dll.ts",
     "lint": "tslint -c tslint.json -p tsconfig.json --type-check",
     "clean": "rimraf ./dist",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -45,7 +45,7 @@
     "css-loader": "0.28.7",
     "extract-text-webpack-plugin": "3.0.0",
     "file-loader": "0.11.2",
-    "friendly-errors-webpack-plugin": "1.6.1",
+    "hard-source-webpack-plugin": "0.4.9",
     "html-loader": "0.5.1",
     "html-webpack-plugin": "2.30.1",
     "raw-loader": "0.5.1",
@@ -62,7 +62,6 @@
     "typescript": "2.5.2",
     "url-loader": "0.5.9",
     "webpack": "3.6.0",
-    "webpack-build-notifier": "0.1.16",
     "webpack-dev-server": "2.8.2",
     "webpack-visualizer-plugin": "0.1.11"
   }
