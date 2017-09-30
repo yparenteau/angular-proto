@@ -2,8 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ApplicationRef, NgModule } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { TestComponent } from './app/test/test';
+// FIXME: Find a way to not have hrm dependencies in app.module
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
 
+// FIXME: Find a better way to import global styles
 import '!!style-loader!css-loader!sass-loader!../src/styles/global.scss';
 
 @NgModule({

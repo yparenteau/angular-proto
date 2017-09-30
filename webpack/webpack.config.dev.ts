@@ -4,14 +4,17 @@ import * as path from 'path';
 import HtmlPlugin = require('html-webpack-plugin');
 import TSLintPlugin = require('tslint-webpack-plugin');
 import StyleLintPlugin = require('stylelint-webpack-plugin');
-import AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 import HardSourcePlugin = require('hard-source-webpack-plugin');
+import { dllReferencePlugins } from './webpack.utils';
 
 const config: webpack.Configuration = {
   devtool: 'inline-source-map',
   cache: true,
-  context: __dirname,
-  entry: path.join(__dirname, 'src', 'main.dev.ts'),
+  context: process.cwd(),
+  entry: [
+    path.join(process.cwd(), './webpack/dlls/polyfills.ts'),
+    path.join(process.cwd(), './src/main.dev.ts')
+  ],
   resolve: {
     extensions: ['.ts', '.js']
   },
@@ -52,9 +55,11 @@ const config: webpack.Configuration = {
     ]
   },
   plugins: [
+    ...dllReferencePlugins(['polyfills', 'vendor', 'devtools'], process.cwd()),
+
     new webpack.ContextReplacementPlugin(
       /angular(\\|\/)core(\\|\/)@angular/,
-      path.join(__dirname, 'src')
+      path.join(process.cwd(), 'src')
     ),
 
     new HtmlPlugin({
@@ -73,59 +78,24 @@ const config: webpack.Configuration = {
       typeCheck: true
     }),
 
-    new webpack.DllReferencePlugin({
-      manifest: path.join(__dirname, `./build/polyfills/manifest.json`),
-      hash: true
-    } as any),
-
-    new webpack.DllReferencePlugin({
-      manifest: path.join(__dirname, `./build/vendor/manifest.json`),
-      hash: true
-    } as any),
-
-    new webpack.DllReferencePlugin({
-      manifest: path.join(__dirname, `./build/devtools/manifest.json`),
-      hash: true
-    } as any),
-
-    new AddAssetHtmlPlugin([
-      {
-        filepath: path.join(__dirname, `./build/polyfills/polyfills.js`),
-        includeSourcemap: false,
-        hash: true
-      },
-      {
-        filepath: path.join(__dirname, `./build/vendor/vendor.js`),
-        includeSourcemap: false,
-        hash: true
-      },
-      {
-        filepath: path.join(__dirname, `./build/devtools/devtools.js`),
-        includeSourcemap: false,
-        hash: true
-      }
-    ]),
-
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    // new FriendlyErrorsPlugin(),
 
     // https://bocoup.com/blog/screencast-transcript-improving-webpack-build-times
     new HardSourcePlugin({
-      cacheDirectory: path.join(__dirname, 'node_modules/.cache/hardsource/[confighash]'),
-      recordsPath: path.join(__dirname, 'node_modules/.cache/hardsource/[confighash]/records.json'),
+      cacheDirectory: path.join(process.cwd(), './node_modules/.cache/hardsource/[confighash]'),
+      recordsPath: path.join(process.cwd(), './node_modules/.cache/hardsource/[confighash]/records.json'),
       configHash: function(webpackConfig) {
         return require('node-object-hash')().hash(webpackConfig);
       }
     }),
-    // new BuildNotifierPlugin({title: 'Webpack build is complete', sound: null}),
     new StyleLintPlugin({emitErrors: false})
   ],
 
   devServer: {
     hot: true,
-    contentBase: path.join(__dirname, './src'),
+    contentBase: path.join(process.cwd(), './src'),
     port: 3000,
     historyApiFallback: true,
     compress: true,
@@ -136,5 +106,6 @@ const config: webpack.Configuration = {
     }
   }
 };
+
 
 export default config;

@@ -7,17 +7,18 @@ const dll = process.env.DLL;
 const dllName = isProduction ? `${dll}.min` : dll;
 
 const config = {
+  context: process.cwd(),
   entry: {
-    [dllName]: [path.join(__dirname, './src/' + dll + '.ts')]
+    [dllName]: [path.join(process.cwd(), `./webpack/dlls/${dll}.ts`)]
   },
   output: {
-    path: path.join(__dirname, `./build/dlls/${dllName}`),
+    path: path.join(process.cwd(), `./build/dlls/${dllName}`),
     filename: '[name].js',
     library: dll
   },
   plugins: [
     new webpack.DllPlugin({
-      path: path.join(__dirname, `./build/dlls/${dllName}/manifest.json`),
+      path: path.join(process.cwd(), `./build/dlls/${dllName}/manifest.json`),
       name: dll
     }),
     new Visualizer({

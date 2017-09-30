@@ -5,12 +5,11 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "npm run build:dlls",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack.config.dev.ts",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack/webpack.config.dev.ts",
     "start": "http-server ./build/dist -p 3000",
-    "build": "npm run clean && cross-env NODE_ENV=production npm run build:dlls && cross-env NODE_ENV=production webpack --config webpack.config.prod.ts",
-    "build:dlls": "cross-env DLL=polyfills webpack --config ./webpack.config.dll.ts && cross-env DLL=vendor webpack --config ./webpack.config.dll.ts && cross-env DLL=devtools webpack --config ./webpack.config.dll.ts",
+    "build": "rimraf ./build/dist && cross-env NODE_ENV=production npm run build:dlls && cross-env NODE_ENV=production webpack --config ./webpack/webpack.config.prod.ts",
+    "build:dlls": "cross-env DLL=polyfills webpack --config ./webpack/webpack.config.dll.ts && cross-env DLL=vendor webpack --config ./webpack/webpack.config.dll.ts && cross-env DLL=devtools webpack --config ./webpack/webpack.config.dll.ts",
     "lint": "tslint -c tslint.json -p tsconfig.json --type-check",
-    "clean": "rimraf ./dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

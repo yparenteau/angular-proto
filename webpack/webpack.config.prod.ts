@@ -4,17 +4,25 @@ import { AotPlugin } from '@ngtools/webpack';
 import HtmlPlugin = require('html-webpack-plugin');
 import Visualizer = require('webpack-visualizer-plugin');
 import AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
+import { dllReferencePlugins } from './webpack.utils';
 
 const config: webpack.Configuration = {
-  entry:  './src/main.prod.ts',
+  devtool: 'source-map',
+  context: process.cwd(),
+  entry: [
+    path.join(process.cwd(), './webpack/dlls/polyfills.ts'),
+    path.join(process.cwd(), './src/main.prod.ts')
+  ],
   output: {
-    path: path.join(__dirname, './build/dist'),
+    path: path.join(process.cwd(), './build/dist'),
     filename: '[name].bundle.js'
   },
   plugins: [
+    ...dllReferencePlugins(['polyfills', 'vendor'], process.cwd()),
+
     new AotPlugin({
-      tsConfigPath: path.join(__dirname, 'tsconfig.json'),
-      entryModule: path.join(__dirname, 'src', 'app.module#AppModule')
+      tsConfigPath: path.join(process.cwd(), './tsconfig.json'),
+      entryModule: path.join(process.cwd(), './src/app.module#AppModule')
     }),
 
     new webpack.optimize.UglifyJsPlugin({
@@ -41,37 +49,12 @@ const config: webpack.Configuration = {
     new Visualizer({
       filename: './visualizer.html'
     }),
-
-    new webpack.DllReferencePlugin({
-      manifest: path.join(__dirname, `./build/polyfills.min/manifest.json`),
-      hash: true
-    } as any),
-
-    new webpack.DllReferencePlugin({
-      manifest: path.join(__dirname, `./build/vendor.min/manifest.json`),
-      hash: true
-    } as any),
-
-    new AddAssetHtmlPlugin([
-      {
-        filepath: path.join(__dirname, `./build/polyfills.min/polyfills.min.js`),
-        includeSourcemap: false,
-        hash: true
-      },
-      {
-        filepath: path.join(__dirname, `./build/vendor.min/vendor.min.js`),
-        includeSourcemap: false,
-        hash: true
-      }
-    ]),
-
     // To remove warning: Critical dependency: the request of a dependency is an expression
     // WARNING in ./node_modules/@angular/core/@angular/core.es5.js
     // new webpack.ContextReplacementPlugin(
     //   /angular(\\|\/)core(\\|\/)@angular/,
     //   path.join(__dirname, 'src')
     // )
-    // new webpack.IgnorePlugin(/^\.\/hmr/, /angularclass$/)
   ],
   resolve: {
     extensions: ['.ts', '.js', '.html'],
@@ -104,8 +87,7 @@ const config: webpack.Configuration = {
         exclude: [/node_modules/]
       },
     ]
-  },
-  devtool: '#source-map',
+  }
 };
 
 export default config;
