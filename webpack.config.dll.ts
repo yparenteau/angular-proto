@@ -11,13 +11,13 @@ const config = {
     [dllName]: [path.join(__dirname, './src/' + dll + '.ts')]
   },
   output: {
-    path: path.join(__dirname, `./build/${dllName}`),
+    path: path.join(__dirname, `./build/dlls/${dllName}`),
     filename: '[name].js',
     library: dll
   },
   plugins: [
     new webpack.DllPlugin({
-      path: path.join(__dirname, `./build/${dllName}/manifest.json`),
+      path: path.join(__dirname, `./build/dlls/${dllName}/manifest.json`),
       name: dll
     }),
     new Visualizer({
