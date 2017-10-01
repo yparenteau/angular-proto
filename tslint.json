@@ -10,6 +10,7 @@
     // Custom
     "trailing-comma": [false, {"multiline": "always", "singleline": "never"}],
     "interface-name": [false, "always-prefix"],
+
     // Angular 2
     "component-class-suffix": true,
     // "component-selector": [true, "element", "my", "kebab-case"],
@@ -30,12 +31,16 @@
     "use-life-cycle-interface": true,
     "use-output-property-decorator": true,
     "use-pipe-transform-interface": true,
+
     // General
+    "array-type": [true, "array"],
+    "arrow-parens": false,
     "no-console": [true,
       "time",
       "timeEnd",
       "trace"
     ],
+    "max-classes-per-file": false,
     "max-line-length": [
       true,
       100

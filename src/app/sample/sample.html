@@ -1,0 +1,7 @@
+<div class="root">
+  <div>{{title}}</div>
+  <hr />
+  <div *ngFor="let country of countries$ | async">
+    {{country.displayName}}
+  </div>
+</div>

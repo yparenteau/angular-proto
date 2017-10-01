@@ -1,9 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ApplicationRef, NgModule } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+// FIXME: Find a way to not have devtools dependencies in app.module
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app/app.component';
-import { TestComponent } from './app/test/test';
+import { SampleComponent } from './app/sample/sample.component';
+import { reducers, metaReducers } from './app/reducers';
 // FIXME: Find a way to not have hrm dependencies in app.module
-import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
+import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr/dist';
 
 // FIXME: Find a better way to import global styles
 import '!!style-loader!css-loader!sass-loader!../src/styles/global.scss';
@@ -11,10 +15,14 @@ import '!!style-loader!css-loader!sass-loader!../src/styles/global.scss';
 @NgModule({
   declarations: [
     AppComponent,
-    TestComponent
+    SampleComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    StoreModule.forRoot(reducers, {metaReducers}),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

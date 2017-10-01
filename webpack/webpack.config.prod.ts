@@ -11,7 +11,7 @@ const config: webpack.Configuration = {
   context: process.cwd(),
   entry: [
     path.join(process.cwd(), './webpack/dlls/polyfills.ts'),
-    path.join(process.cwd(), './src/main.prod.ts')
+    path.join(process.cwd(), './src/main.ts')
   ],
   output: {
     path: path.join(process.cwd(), './build/dist'),
