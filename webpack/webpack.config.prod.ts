@@ -18,7 +18,7 @@ const config: webpack.Configuration = {
     filename: '[name].bundle.js'
   },
   plugins: [
-    ...dllReferencePlugins(['polyfills', 'vendor'], process.cwd()),
+    ...dllReferencePlugins(['polyfills.min', 'vendor.min'], process.cwd()),
 
     new AotPlugin({
       tsConfigPath: path.join(process.cwd(), './tsconfig.json'),

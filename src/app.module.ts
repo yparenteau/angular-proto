@@ -1,18 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ApplicationRef, NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app/app.component';
 import { SampleComponent } from './app/sample/sample.component';
 import { reducers, metaReducers } from './app/reducers';
+
 // FIXME: Find a way to not have hrm dependencies in app.module
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr/dist';
 
 // FIXME: Find a better way to import global styles
 import '!!style-loader!css-loader!sass-loader!../src/styles/global.scss';
-
-// FIXME: This does not work
-// Needs to be fixed using webpack.NormalReplacement
-import { environment } from './environments/environment';
 
 @NgModule({
   declarations: [
@@ -22,7 +20,10 @@ import { environment } from './environments/environment';
   imports: [
     BrowserModule,
     StoreModule.forRoot(reducers, {metaReducers}),
-    ...environment.imports
+    // FIXME: This should be imported only when the NODE_ENV is 'development'
+    StoreDevtoolsModule.instrument({
+      maxAge: 25
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

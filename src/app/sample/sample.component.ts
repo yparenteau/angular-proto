@@ -12,7 +12,7 @@ import { Country } from '../models/country';
   styleUrls: ['./sample.scss']
 })
 export class SampleComponent {
-  public title = 'Angular rs';
+  public title = 'Angular';
   public countries$: Observable<Country[]>;
 
   constructor(private store: Store<RootState>) {
