@@ -1,8 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ApplicationRef, NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
-// FIXME: Find a way to not have devtools dependencies in app.module
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app/app.component';
 import { SampleComponent } from './app/sample/sample.component';
 import { reducers, metaReducers } from './app/reducers';
@@ -12,6 +10,10 @@ import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularcla
 // FIXME: Find a better way to import global styles
 import '!!style-loader!css-loader!sass-loader!../src/styles/global.scss';
 
+// FIXME: This does not work
+// Needs to be fixed using webpack.NormalReplacement
+import { environment } from './environments/environment';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,9 +22,7 @@ import '!!style-loader!css-loader!sass-loader!../src/styles/global.scss';
   imports: [
     BrowserModule,
     StoreModule.forRoot(reducers, {metaReducers}),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25
-    })
+    ...environment.imports
   ],
   providers: [],
   bootstrap: [AppComponent]
